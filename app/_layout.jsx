@@ -6,6 +6,8 @@ import { SplashScreen, Slot, Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
 
+import GlobalProvider from "../context/GlobalProvider";
+
 SplashScreen.preventAutoHideAsync(); // this ensures that the splash screen remains visible until certain conditions are met, typically until all resources (like fonts) have been loaded.
 
 const RootLayout = () => {
@@ -36,14 +38,14 @@ const RootLayout = () => {
 	// the operator && returns the value of the first falsy operand encountered when evaluating from left to right, or the value of the last operand if they are all truthy.
 
 	return (
-		<>
+		<GlobalProvider>
 			<Stack>
 				<Stack.Screen name="index" options={{ headerShown: false }} />
 				<Stack.Screen name="(auth)" options={{ headerShown: false }} />
 				<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 				{/* <Stack.Screen name="/search/[query]" options={{ headerShown: false }} /> */}
 			</Stack>
-		</>
+		</GlobalProvider>
 	);
 	// the <Stack> component manages a stack of screens, allowing users to navigate forward to new screens while pushing them onto the stack, and backward by popping screens off the stack.
 

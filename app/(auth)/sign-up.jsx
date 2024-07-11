@@ -1,18 +1,48 @@
-import { SafeAreaView, ScrollView, Text, View, Image } from "react-native";
+import {
+	SafeAreaView,
+	ScrollView,
+	Text,
+	View,
+	Image,
+	Alert,
+} from "react-native";
 import React, { useState } from "react";
 
 import { images } from "../../constants";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { createUser } from "../../lib/appwrite";
 
-const SignUp = () => {
-	const [form, setForm] = useState({ username: "", email: "", password: "" });
-	const [isSubmitting, setIsSubmitting] = useState(false);
+import { useGlobalContext } from "../../context/GlobalProvider";
 
-	const submit = () => {
-		createUser();
+const SignUp = () => {
+	const { setUser, setIsLogged } = useGlobalContext();
+
+	const [isSubmitting, setSubmitting] = useState(false);
+	const [form, setForm] = useState({
+		username: "",
+		email: "",
+		password: "",
+	});
+
+	const submit = async () => {
+		if (form.username === "" || form.email === "" || form.password === "") {
+			Alert.alert("Error", "Please fill in all fields");
+		}
+
+		setSubmitting(true);
+		try {
+			const result = await createUser(form.email, form.password, form.username);
+			setUser(result);
+			setIsLogged(true);
+
+			router.replace("/home");
+		} catch (error) {
+			Alert.alert("Error", error.message);
+		} finally {
+			setSubmitting(false);
+		}
 	};
 
 	return (
